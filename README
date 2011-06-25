@@ -1,0 +1,234 @@
+
+DateMiner
+---------
+by John Muellerleile (@jrecursive) circa 2009
+
+Some "rather evil" Java to extract potential date strings from a URL and its content, then decide which is most likely the one you want. Tuned for news, press releases, that sort of thing (but can perform well on other things). YMMV.
+
+This was at one time part of a much larger body of text processing code.  A much prettier one, too.
+
+>> excuse:
+
+Decidedly not pretty code.  I originally wanted to call this "9hells" but decided it wasn't very descriptive.  
+
+Try not to judge me on this one, it was built as a last resort; fancier and/or elegant methods didn't pan out.  Not even lingpipe or GATE. 
+
+>> try:
+
+DateMiner dm = new DateMiner();
+dm.setTrace(true);
+long dt = dm.coerceDates("http://someurl.com/some/web/page/");
+
+>> example run with trace enabled:
+
+jmm$ java DateMiner "http://politicalticker.blogs.cnn.com/2010/05/20/top-intelligence-official-resigns/?hpt=T1&iref=BN1&fbid=BZIMt3qcXgl"
+extracting from url: http://politicalticker.blogs.cnn.com/2010/05/20/top-intelligence-official-resigns/?hpt=T1&iref=BN1&fbid=BZIMt3qcXgl
+coerceDatesFromText(http://politicalticker.blogs.cnn.com/2010/05/20/top-intelligence-official-resigns/?hpt=T1&iref=BN1&fbid=BZIMt3qcXgl)
+* coerceDatesFromText: detected url (via http)
+after domain substring: /2010/05/20/top-intelligence-official-resigns/?hpt=T1&iref=BN1&fbid=BZIMt3qcXgl
+after collapse:  2010 05 20 top intelligence official resigns  hpt T1 iref BN1 fbid BZIMt3qcXgl
+after strip:    2010 05 20  1   1      3
+chunk: 2010
+	seems to be a number
+	length is 4, trying 4, 2/2 combinations
+ch_c = 1, ch_sz = 15
+chunk: 05
+	seems to be a number
+	length is 2, trying to determine possibility of month or day
+		(is a month)
+ch_c = 2, ch_sz = 15
+chunk: 20
+	seems to be a number
+	length is 2, trying to determine possibility of month or day
+		(is a day(case 2))
+		 i found one via sm1: (2010, 5, 20)
+		**rcal = java.util.GregorianCalendar[time=?,areFieldsSet=false,areAllFieldsSet=true,lenient=true,zone=sun.util.calendar.ZoneInfo[id="America/New_York",offset=-18000000,dstSavings=3600000,useDaylight=true,transitions=235,lastRule=java.util.SimpleTimeZone[id=America/New_York,offset=-18000000,dstSavings=3600000,useDaylight=true,startYear=0,startMode=3,startMonth=2,startDay=8,startDayOfWeek=1,startTime=7200000,startTimeMode=0,endMode=3,endMonth=10,endDay=1,endDayOfWeek=1,endTime=7200000,endTimeMode=0]],firstDayOfWeek=1,minimalDaysInFirstWeek=1,ERA=1,YEAR=2010,MONTH=4,WEEK_OF_YEAR=21,WEEK_OF_MONTH=4,DAY_OF_MONTH=20,DAY_OF_YEAR=140,DAY_OF_WEEK=5,DAY_OF_WEEK_IN_MONTH=3,AM_PM=1,HOUR=5,HOUR_OF_DAY=17,MINUTE=49,SECOND=30,MILLISECOND=626,ZONE_OFFSET=-18000000,DST_OFFSET=3600000]
+ch_c = 3, ch_sz = 15
+chunk: top
+	NaN, scanning for keywords (feb., EDT, etc.)
+ch_c = 4, ch_sz = 15
+chunk: intelligence
+	NaN, scanning for keywords (feb., EDT, etc.)
+ch_c = 5, ch_sz = 15
+chunk: official
+	NaN, scanning for keywords (feb., EDT, etc.)
+ch_c = 6, ch_sz = 15
+chunk: resigns
+	NaN, scanning for keywords (feb., EDT, etc.)
+ch_c = 7, ch_sz = 15
+chunk: hpt
+	NaN, scanning for keywords (feb., EDT, etc.)
+ch_c = 8, ch_sz = 15
+chunk: T1
+	NaN, scanning for keywords (feb., EDT, etc.)
+	i can't guess what 't1' is :(
+ch_c = 9, ch_sz = 15
+chunk: iref
+	NaN, scanning for keywords (feb., EDT, etc.)
+ch_c = 10, ch_sz = 15
+chunk: BN1
+	NaN, scanning for keywords (feb., EDT, etc.)
+ch_c = 11, ch_sz = 15
+chunk: fbid
+	NaN, scanning for keywords (feb., EDT, etc.)
+ch_c = 12, ch_sz = 15
+chunk: BZIMt3qcXgl
+	NaN, scanning for keywords (feb., EDT, etc.)
+ch_c = 13, ch_sz = 15
+chunk: 2010
+	seems to be a number
+	length is 4, trying 4, 2/2 combinations
+ch_c = 1, ch_sz = 14
+chunk: 05
+	seems to be a number
+	length is 2, trying to determine possibility of month or day
+		(is a month)
+ch_c = 2, ch_sz = 14
+chunk: 20
+	seems to be a number
+	length is 2, trying to determine possibility of month or day
+		(is a day(case 2))
+		 i found one via sm1: (2010, 5, 20)
+		**rcal = java.util.GregorianCalendar[time=?,areFieldsSet=false,areAllFieldsSet=true,lenient=true,zone=sun.util.calendar.ZoneInfo[id="America/New_York",offset=-18000000,dstSavings=3600000,useDaylight=true,transitions=235,lastRule=java.util.SimpleTimeZone[id=America/New_York,offset=-18000000,dstSavings=3600000,useDaylight=true,startYear=0,startMode=3,startMonth=2,startDay=8,startDayOfWeek=1,startTime=7200000,startTimeMode=0,endMode=3,endMonth=10,endDay=1,endDayOfWeek=1,endTime=7200000,endTimeMode=0]],firstDayOfWeek=1,minimalDaysInFirstWeek=1,ERA=1,YEAR=2010,MONTH=4,WEEK_OF_YEAR=21,WEEK_OF_MONTH=4,DAY_OF_MONTH=20,DAY_OF_YEAR=140,DAY_OF_WEEK=5,DAY_OF_WEEK_IN_MONTH=3,AM_PM=1,HOUR=5,HOUR_OF_DAY=17,MINUTE=49,SECOND=30,MILLISECOND=630,ZONE_OFFSET=-18000000,DST_OFFSET=3600000]
+ch_c = 3, ch_sz = 14
+chunk: 1
+	seems to be a number
+transformed u_chunk into '01'
+	length is 2, trying to determine possibility of month or day
+		(is a month)
+ch_c = 4, ch_sz = 14
+chunk: 1
+	seems to be a number
+transformed u_chunk into '01'
+	length is 2, trying to determine possibility of month or day
+		(is a day)
+ch_c = 5, ch_sz = 14
+chunk: 3
+	seems to be a number
+transformed u_chunk into '03'
+	length is 2, trying to determine possibility of month or day
+		(is a day)
+ch_c = 6, ch_sz = 14
+[found date] 5/20/2010
+[found date] 5/20/2010
+scanning content for url: http://politicalticker.blogs.cnn.com/2010/05/20/top-intelligence-official-resigns/?hpt=T1&iref=BN1&fbid=BZIMt3qcXgl
+-- content dates --
+coerceDatesFromURL url = http://politicalticker.blogs.cnn.com/2010/05/20/top-intelligence-official-resigns/?hpt=T1&iref=BN1&fbid=BZIMt3qcXgl
+geturl(http://politicalticker.blogs.cnn.com/2010/05/20/top-intelligence-official-resigns/?hpt=T1&iref=BN1&fbid=BZIMt3qcXgl)
+handleStartTag <14458>: tag = div, attr_nm = class -> cnnBlogContentDateHead
+handleText <14494>: data = May 20, 2010
+coerceDatesFromText(May 20, 2010)
+coerceDatesFromText: (strip/u2_chunks) keeping detected month token 'may'
+after collapse: May 20  2010
+after strip:    may 20 2010
+chunk: May
+	NaN, scanning for keywords (feb., EDT, etc.)
+		!matched on month shorthand 'may', pos_month = 4
+ch_c = 1, ch_sz = 4
+chunk: 20
+	seems to be a number
+	length is 2, trying to determine possibility of month or day
+		(is a day(case 2))
+ch_c = 2, ch_sz = 4
+chunk: 2010
+	seems to be a number
+	length is 4, trying 4, 2/2 combinations
+		 i found one via sm1: (2010, 4, 20)
+		**rcal = java.util.GregorianCalendar[time=?,areFieldsSet=false,areAllFieldsSet=true,lenient=true,zone=sun.util.calendar.ZoneInfo[id="America/New_York",offset=-18000000,dstSavings=3600000,useDaylight=true,transitions=235,lastRule=java.util.SimpleTimeZone[id=America/New_York,offset=-18000000,dstSavings=3600000,useDaylight=true,startYear=0,startMode=3,startMonth=2,startDay=8,startDayOfWeek=1,startTime=7200000,startTimeMode=0,endMode=3,endMonth=10,endDay=1,endDayOfWeek=1,endTime=7200000,endTimeMode=0]],firstDayOfWeek=1,minimalDaysInFirstWeek=1,ERA=1,YEAR=2010,MONTH=3,WEEK_OF_YEAR=21,WEEK_OF_MONTH=4,DAY_OF_MONTH=20,DAY_OF_YEAR=140,DAY_OF_WEEK=5,DAY_OF_WEEK_IN_MONTH=3,AM_PM=1,HOUR=5,HOUR_OF_DAY=17,MINUTE=49,SECOND=31,MILLISECOND=219,ZONE_OFFSET=-18000000,DST_OFFSET=3600000]
+ch_c = 3, ch_sz = 4
+chunk: may
+	NaN, scanning for keywords (feb., EDT, etc.)
+		!matched on month shorthand 'may', pos_month = 4
+ch_c = 1, ch_sz = 3
+chunk: 20
+	seems to be a number
+	length is 2, trying to determine possibility of month or day
+		(is a day(case 2))
+ch_c = 2, ch_sz = 3
+chunk: 2010
+	seems to be a number
+	length is 4, trying 4, 2/2 combinations
+		 i found one via sm1: (2010, 4, 20)
+		**rcal = java.util.GregorianCalendar[time=?,areFieldsSet=false,areAllFieldsSet=true,lenient=true,zone=sun.util.calendar.ZoneInfo[id="America/New_York",offset=-18000000,dstSavings=3600000,useDaylight=true,transitions=235,lastRule=java.util.SimpleTimeZone[id=America/New_York,offset=-18000000,dstSavings=3600000,useDaylight=true,startYear=0,startMode=3,startMonth=2,startDay=8,startDayOfWeek=1,startTime=7200000,startTimeMode=0,endMode=3,endMonth=10,endDay=1,endDayOfWeek=1,endTime=7200000,endTimeMode=0]],firstDayOfWeek=1,minimalDaysInFirstWeek=1,ERA=1,YEAR=2010,MONTH=3,WEEK_OF_YEAR=21,WEEK_OF_MONTH=4,DAY_OF_MONTH=20,DAY_OF_YEAR=140,DAY_OF_WEEK=5,DAY_OF_WEEK_IN_MONTH=3,AM_PM=1,HOUR=5,HOUR_OF_DAY=17,MINUTE=49,SECOND=31,MILLISECOND=222,ZONE_OFFSET=-18000000,DST_OFFSET=3600000]
+ch_c = 3, ch_sz = 3
+[found date] 4/20/2010
+[found date] 4/20/2010
+handleEndTag <14506>: tag = div (parsingDates/STOP)
+handleStartTag <35798>: tag = a, attr_nm = href -> http://politicalticker.blogs.cnn.com/category/presidential-candidates/barack-obama/
+handleText <35940>: data = Barack Obama
+coerceDatesFromText(Barack Obama)
+after collapse: Barack Obama
+after strip:    
+chunk: Barack
+	NaN, scanning for keywords (feb., EDT, etc.)
+ch_c = 1, ch_sz = 2
+chunk: Obama
+	NaN, scanning for keywords (feb., EDT, etc.)
+ch_c = 2, ch_sz = 2
+found no dates in: 
+Barack Obama
+
+
+handleEndTag <35952>: tag = a (parsingDates/STOP)
+handleStartTag <36008>: tag = a, attr_nm = href -> http://politicalticker.blogs.cnn.com/category/presidential-candidates/john-mccain/
+handleText <36148>: data = John McCain
+coerceDatesFromText(John McCain)
+after collapse: John McCain
+after strip:    
+chunk: John
+	NaN, scanning for keywords (feb., EDT, etc.)
+ch_c = 1, ch_sz = 2
+chunk: McCain
+	NaN, scanning for keywords (feb., EDT, etc.)
+ch_c = 2, ch_sz = 2
+found no dates in: 
+John McCain
+
+
+handleEndTag <36159>: tag = a (parsingDates/STOP)
+handleStartTag <36409>: tag = a, attr_nm = href -> http://politicalticker.blogs.cnn.com/category/presidential-candidates/hillary-clinton/
+handleText <36557>: data = Hillary Clinton
+coerceDatesFromText(Hillary Clinton)
+after collapse: Hillary Clinton
+after strip:    
+chunk: Hillary
+	NaN, scanning for keywords (feb., EDT, etc.)
+ch_c = 1, ch_sz = 2
+chunk: Clinton
+	NaN, scanning for keywords (feb., EDT, etc.)
+ch_c = 2, ch_sz = 2
+found no dates in: 
+Hillary Clinton
+
+
+handleEndTag <36572>: tag = a (parsingDates/STOP)
+handleStartTag <37754>: tag = a, attr_nm = href -> http://politicalticker.blogs.cnn.com/category/presidential-candidates/mitt-romney/
+handleText <37894>: data = Mitt Romney
+coerceDatesFromText(Mitt Romney)
+after collapse: Mitt Romney
+after strip:    
+chunk: Mitt
+	NaN, scanning for keywords (feb., EDT, etc.)
+ch_c = 1, ch_sz = 2
+chunk: Romney
+	NaN, scanning for keywords (feb., EDT, etc.)
+ch_c = 2, ch_sz = 2
+found no dates in: 
+Mitt Romney
+
+
+handleEndTag <37905>: tag = a (parsingDates/STOP)
+------------ most_likely dates ------------
+> adding both url and content dates to most likely and relying on trimming outliers to find a reasonable date, reason: there are dates found in both url and content, but none are present in both sets.
+> most_likely date [1274392170626], reason: date appears in url, no dates found in content
+> most_likely date [1274392170630], reason: date appears in url, no dates found in content
+> most_likely date [1271800171219], reason: date appears in content, no dates found in url
+> most_likely date [1271800171222], reason: date appears in content, no dates found in url
+likely_date = 1274392170626
+likely_date = 1274392170630
+likely_date = 1271800171219
+likely_date = 1271800171222
+[newest] most likely overall date: 5/20/2010    http://politicalticker.blogs.cnn.com/2010/05/20/top-intelligence-official-resigns/?hpt=T1&iref=BN1&fbid=BZIMt3qcXgl    out of 4 possible values
+final resolved date: 1274392170630
+
+
