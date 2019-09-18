@@ -1,17 +1,8 @@
 
 DateMiner
 ---------
-by John Muellerleile (@jrecursive) circa 2009
 
-Some "rather evil" Java to extract potential date strings from a URL and its content, then decide which is most likely the one you want. Tuned for news, press releases, that sort of thing (but can perform well on other things). YMMV.
-
-This was at one time part of a much larger body of text processing code.  A much prettier one, too.
-
->> excuse:
-
-Decidedly not pretty code.  I originally wanted to call this "9hells" but decided it wasn't very descriptive.  
-
-Try not to judge me on this one, it was built as a last resort; fancier and/or elegant methods didn't pan out.  Not even lingpipe or GATE. 
+This is old and ugly.  It might still work.  ;)
 
 >> try:
 
